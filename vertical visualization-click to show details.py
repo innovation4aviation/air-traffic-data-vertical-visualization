@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Oct 14 18:34:38 2019
-
-@author: Jia
 """
 
 import re
