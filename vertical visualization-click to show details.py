@@ -40,7 +40,7 @@ for j in range(145):
             mmax = num_0313[k][j]
 print('mmax = ', mmax)                 #max flight number at specific FL during 10min
 
-#set the low & high for the number of flights
+#set the low & high criteria for the number of flights
 low, high=map(int,input("please enter the criteria of low and high traffic: ").split())
 
 num_array = np.array(num_0313)         #format conversion
