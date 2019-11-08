@@ -12,7 +12,9 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 
-f = open('C:/Users/JDF/Desktop/IAA/19-3-12-KZTL/10min/modified version/filtered data.txt','r')
+#open the result file of 'filter data and write into file'
+#please fill with specific file path information
+f = open('','r')
 inf = f.read()
 f.close()
 pattern1 = "\["
@@ -27,7 +29,8 @@ for i in range(len(positions)-1):
     d_num=[int(j) for j in s_num]
     num.append(d_num)
     
-##set 'time' as the x axis and shorten time duration to 24 hours/focus on 0-500FL
+#set 'time' as the x axis and shorten time duration to 24 hours
+#only consider the altitude information in range[0ft, 50000ft] and 'null' data
 num_0313 = [[0 for p in range(145)] for q in range(501)]
 mmax = 0
 for j in range(145):
@@ -35,9 +38,9 @@ for j in range(145):
         num_0313[k][j]=num[144+j][k+1]
         if mmax < num_0313[k][j]:
             mmax = num_0313[k][j]
-print('mmax = ', mmax)                 #max flight number at specific FL during 1min
+print('mmax = ', mmax)                 #max flight number at specific FL during 10min
 
-
+#set the low & high for the number of flights
 low, high=map(int,input("please enter the criteria of low and high traffic: ").split())
 
 num_array = np.array(num_0313)         #format conversion
@@ -54,7 +57,7 @@ ax5 = plt.subplot(gs[4])
 
 
 #draw the heatmap
-#set the scale for axises and colorbar
+#set the scale for axes and colorbar
 cbar_kws = { 'ticks' : np.arange(0,400,40)}    
 scale_interval = [' ']
 cmap = sns.cubehelix_palette(100, start = 2.65, rot = 0, dark = 0, light = .98)     #set the color
@@ -68,14 +71,13 @@ ax3.tick_params(labelsize=15)
 t_num=[0 for i in range(145)]
 for m in range(145):
     for n in range(501):
-        t_num[m]=t_num[m]+num_0313[n][m]
-#side bar of time
+        t_num[m]=t_num[m]+num_0313[n][m]   
+#horizontal bar showing detailed flight information at specific time point
 tbar = [[0 for i in range(145)] for j in range(2)]
 for j in range(2):
     for i in range(145):
         tbar[j][i] = t_num[i]
 tbar_array = np.array(tbar)
-#set the scale for axises and colorbar
 cbar_kws = { 'ticks' : np.arange(0,7000,500) }    
 scale_interval = [' ']
 cmap = sns.cubehelix_palette(650, start = 2.92, rot = 0, dark = 0.2, light = .95) 
@@ -88,13 +90,13 @@ h_num = [0 for i in range(501)]
 for p in range(501):
     for q in range(145):
         h_num[p] = h_num[p]+num_0313[p][q]
-#side bar of altitude
+#vertical bar showing detailed flight information at specific flight level
 hbar = [[0 for i in range(2)] for j in range(501)]
 for i in range(2):
     for j in range(501):
         hbar[j][i] = h_num[j]
 hbar_array = np.array(hbar)
-#set the scale for axises and colorbar
+
 cbar_kws = { 'ticks' : np.arange(0,19000,1000) }    
 scale_interval = [' ']
 cmap = sns.cubehelix_palette(1800, start = 2.25, rot = 0.05, dark = 0.25, light = .98)     #set the color
@@ -105,7 +107,7 @@ colorbar_ax1.tick_params(labelsize=15)
 plt.tight_layout(pad=3.0, h_pad=5.3)
 plt.suptitle('Number of Flights at each FL/Time', size=35)
 
-#click to show details
+#click to show detailed graphs
 timenum=[[0 for p in range(145)] for q in range(501)]
 timenum=num_0313
 fnum=[[0 for p in range(51)] for q in range(145)]
@@ -126,11 +128,12 @@ def onclick(event):
     global click2
     global annotation
     global ax7
-#    labelt=pd.date_range("2019-03-13", "2019-03-14", freq="10T")
+
     if event.xdata:
         if subax == ax2:            
             x=int(event.xdata//1)
             y=int(event.ydata//1)
+            #use different colors to show the number of flights
             if num_0313[y][x]<=low:
                 color="green"
             else:
@@ -181,8 +184,8 @@ def onclick(event):
                     ax7.set_yticklabels([0,50,100,150,200,250,300,350,400,450,500], fontsize=15, backgroundcolor='snow')
                     ax7.set_xlabel("Number of Flights", size=20, backgroundcolor='snow')
                     ax7.set_ylabel('Flight Level(FL)', size=20, backgroundcolor='snow')
-                    datetimet = labelt[fdata].to_pydatetime()                                  #current time /format conversion: DateTimeIndex-->datetime
-                    plottitle=datetimet.strftime('%Y-%m-%d %H:%M:%S')                               #datetime-->string
+                    datetimet = labelt[fdata].to_pydatetime()                                  
+                    plottitle=datetimet.strftime('%Y-%m-%d %H:%M:%S')                              
                     ax7.text(x=0.8,y=0.95,s=plottitle,transform=ax7.transAxes,fontsize=20,bbox={'facecolor':'ivory', 'alpha':0.5, 'pad':5})
                     plt.draw()
                 click1 =click1+1
@@ -213,8 +216,8 @@ def onclick(event):
                     ax7.set_yticklabels([0,50,100,150,200,250,300,350,400,450,500], fontsize=15, backgroundcolor='snow')
                     ax7.set_xlabel("Number of Flights", size=20, backgroundcolor='snow')
                     ax7.set_ylabel('Flight Level(FL)', size=20, backgroundcolor='snow')
-                    datetimet = labelt[fdata].to_pydatetime()                                  #current time /format conversion: DateTimeIndex-->datetime
-                    plottitle=datetimet.strftime('%Y-%m-%d %H:%M:%S')                               #datetime-->string
+                    datetimet = labelt[fdata].to_pydatetime()                                  
+                    plottitle=datetimet.strftime('%Y-%m-%d %H:%M:%S')                               
                     ax7.text(x=0.8,y=0.95,s=plottitle,transform=ax7.transAxes,fontsize=20,bbox={'facecolor':'ivory', 'alpha':0.5, 'pad':5})
                     plt.draw()   
     else:
